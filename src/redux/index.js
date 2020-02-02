@@ -1,8 +1,16 @@
-import { createStore } from "redux";
+import { createStore, applyMiddleware } from "redux";
+import thunk from "redux-thunk";
 
 export function increment() {
-  return {
-    type: "INCREMENT"
+  return (dispatch, getState) => {
+    const state = getState();
+    if (state % 2 === 0) {
+      dispatch({ type: "INCREMENT" });
+    } else {
+      setTimeout(() => {
+        dispatch({ type: "INCREMENT" });
+      }, 3000);
+    }
   };
 }
 
@@ -23,11 +31,10 @@ function countReducer(count = 0, action) {
   }
 }
 
-const store = createStore(countReducer);
+const store = createStore(countReducer, applyMiddleware(thunk));
 
 store.subscribe(() => {
   console.log(store.getState());
 });
-
 
 export default store;
